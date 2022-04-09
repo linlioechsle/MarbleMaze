@@ -3,6 +3,7 @@ package com.example.marblemaze;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -16,6 +17,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private Point playerPoint;
     private ObstacleManager obstacleManager;
 
+    private boolean movingPlayer = false;
+
+    private boolean gameOver = false;
+    private long gameOverTime;
+
     public GamePanel(Context context) {
         super(context);
 
@@ -24,11 +30,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         thread = new MainThread(getHolder(), this);
 
         player = new MarblePlayer(new Rect(100, 100, 200, 200), Color.BLUE);
-        playerPoint = new Point(150, 150);
+        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        player.update(playerPoint);
 
         obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
 
         setFocusable(true);
+    }
+
+    public void reset() {
+        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        player.update(playerPoint);
+        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
+        movingPlayer = false;
     }
 
     @Override
@@ -61,26 +75,51 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent (MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (!gameOver && player.getMarble().contains((int)event.getX(), (int)event.getY()))
+                    movingPlayer = true;
+                if(gameOver && System.currentTimeMillis() - gameOverTime >= 2000) {
+                    reset();
+                    gameOver = false;
+                }
+                break;
             case MotionEvent.ACTION_MOVE:
-                playerPoint.set((int)event.getX(), (int)event.getY());
-
+                if(!gameOver && movingPlayer)
+                    playerPoint.set((int)event.getX(), (int)event.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                movingPlayer = false;
+                break;
         }
         return true;
         //return super.onTouchEvent(event);
     }
 
     public void update() {
-        player.update(playerPoint);
-        obstacleManager.update();
+        if(!gameOver) {
+            player.update(playerPoint);
+            obstacleManager.update();
+            if(obstacleManager.playerCollision(player)) {
+                gameOver = true;
+                gameOverTime = System.currentTimeMillis();
+            }
+        }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvas.drawColor(Color.RED);
+        canvas.drawColor(Color.WHITE);
 
         player.draw(canvas);
         obstacleManager.draw(canvas);
+
+        if(gameOver) {
+            Paint paint = new Paint();
+            paint.setTextSize(100);
+            paint.setColor(Color.MAGENTA);
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText("GAME OVER!", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2, paint);
+        }
 
     }
 }

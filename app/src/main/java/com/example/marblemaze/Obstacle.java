@@ -30,12 +30,7 @@ public class Obstacle implements GameObject {
     }
 
     public boolean playerCollision(MarblePlayer player) {
-        if (rectangle.contains(player.getMarble().left, player.getMarble().top)
-            || rectangle.contains(player.getMarble().right, player.getMarble().top)
-            || rectangle.contains(player.getMarble().left, player.getMarble().bottom)
-            || rectangle.contains(player.getMarble().right, player.getMarble().bottom))
-            return true;
-        return false;
+        return Rect.intersects(rectangle, player.getMarble()) || Rect.intersects(rectangle2, player.getMarble());
     }
 
     @Override

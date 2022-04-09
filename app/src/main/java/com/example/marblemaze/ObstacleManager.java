@@ -13,6 +13,7 @@ public class ObstacleManager {
     private int color;
     private long startTime;
 
+
     public ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight, int color) {
         this.playerGap = playerGap;
         this.obstacleGap = obstacleGap;
@@ -24,6 +25,14 @@ public class ObstacleManager {
         obstacles = new ArrayList<>();
 
         populateObstacles();
+    }
+
+    public boolean playerCollision(MarblePlayer player) {
+        for (Obstacle ob : obstacles) {
+            if (ob.playerCollision(player))
+                return true;
+        }
+        return false;
     }
 
     private void populateObstacles() {
