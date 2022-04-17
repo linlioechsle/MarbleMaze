@@ -9,9 +9,11 @@ public class SceneManager {
     private ArrayList<Scene> scenes = new ArrayList<>();
     public static int ACTIVE_SCENE;
 
-    public SceneManager() {
-        ACTIVE_SCENE = 0;
+    public SceneManager(int ACTIVE_SCENE) {
+        this.ACTIVE_SCENE = ACTIVE_SCENE;
+        scenes.add(new StartScreen());
         scenes.add(new GameplayScene());
+
 
     }
 

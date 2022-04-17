@@ -1,18 +1,21 @@
 package com.example.marblemaze;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-public class OrientationData implements SensorEventListener {
+public class SensorData implements SensorEventListener {
     private SensorManager manager;
     private Sensor accelerometer;
     private Sensor magnetometer;
+    private Sensor light;
 
     private float[] accelerometerOutput;
     private float[] magnetometerOutput;
+    private float lightOutput;
 
     private float[] orientation = new float[3];
 
@@ -30,15 +33,18 @@ public class OrientationData implements SensorEventListener {
         startOrientation = null;
     }
 
-    public OrientationData() {
+    public SensorData() {
         manager = (SensorManager)Constants.CURRENT_CONTEXT.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        light = manager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
     }
 
     public void register() {
         manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
         manager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
+        manager.registerListener(this, light, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void pause() {
@@ -52,19 +58,37 @@ public class OrientationData implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        // getting data from both sensors
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            accelerometerOutput = event.values;
-        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            magnetometerOutput = event.values;
+        // getting data from accelerometer and magnetometer
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER: // for movement of marble
+                accelerometerOutput = event.values.clone();
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD: // for movement of marble
+                magnetometerOutput = event.values.clone();
+                break;
+            case Sensor.TYPE_LIGHT:
+                lightOutput = event.values[0];
+                System.out.println("LIGHT LEVEL: " + lightOutput);
+            default:
+                return;
+
         }
+
+        // changing background color
+        if (lightOutput < 1000) {
+            Constants.BACKGROUND_COLOR = Color.BLACK;
+            Constants.OBSTACLE_COLOR = Color.WHITE;
+        } else {
+            Constants.BACKGROUND_COLOR = Color.WHITE;
+            Constants.OBSTACLE_COLOR = Color.BLACK;
+        }
+
         // getting rotation matrix
         if (accelerometerOutput != null && magnetometerOutput != null) {
             float[] rotationMatrix = new float[9];
-            float[] inclinationMatrix = new float[9];
-            boolean success = SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, accelerometerOutput, magnetometerOutput);
+            boolean canRotate = SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerOutput, magnetometerOutput);
 
-            if (success) {
+            if (canRotate) {
                 SensorManager.getOrientation(rotationMatrix, orientation);
 
                 if (startOrientation == null) {

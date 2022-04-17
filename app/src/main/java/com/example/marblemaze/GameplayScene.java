@@ -10,37 +10,37 @@ import android.view.MotionEvent;
 public class GameplayScene implements Scene {
     private MarblePlayer player;
     private Point playerPoint;
-    private ObstacleManager obstacleManager;
+    private MazeGenerator generator;
 
     private boolean movingPlayer = false;
 
     private boolean gameOver = false;
     private long gameOverTime;
 
-    private OrientationData orientationData;
+    private SensorData sensorData;
     private long frameTime;
 
     public GameplayScene() {
-        player = new MarblePlayer(new Rect(100, 100, 200, 200), Color.BLUE);
+        player = new MarblePlayer(new Rect(50, 50, 100, 100), Color.BLUE);
         playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
         player.update(playerPoint);
 
-        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
-        orientationData = new OrientationData();
-        orientationData.register();
+        generator = new MazeGenerator(200, 350, 10, Color.BLACK);
+        sensorData = new SensorData();
+        sensorData.register();
         frameTime = System.currentTimeMillis();
     }
 
     public void reset() {
         playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
         player.update(playerPoint);
-        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
+        generator = new MazeGenerator(200, 350, 10, Color.BLACK);
         movingPlayer = false;
     }
 
     @Override
     public void terminate() {
-        SceneManager.ACTIVE_SCENE = 0;
+        SceneManager.ACTIVE_SCENE = 1;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GameplayScene implements Scene {
                 if(gameOver && System.currentTimeMillis() - gameOverTime >= 2000) {
                     reset();
                     gameOver = false;
-                    orientationData.newGame();
+                    sensorData.newGame();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -67,10 +67,10 @@ public class GameplayScene implements Scene {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
+        canvas.drawColor(Constants.BACKGROUND_COLOR);
 
         player.draw(canvas);
-        obstacleManager.draw(canvas);
+        generator.draw(canvas);
 
         if(gameOver) {
             Paint paint = new Paint();
@@ -90,9 +90,9 @@ public class GameplayScene implements Scene {
             int elapsedTime = (int) (System.currentTimeMillis() - frameTime);
             frameTime = System.currentTimeMillis();
 
-            if (orientationData.getOrientation() != null && orientationData.getStartOrientation() != null) {
-                float deltaPitch = orientationData.getOrientation()[1] - orientationData.getStartOrientation()[1]; // Y axis
-                float deltaRoll = orientationData.getOrientation()[2] - orientationData.getStartOrientation()[2]; // X axis
+            if (sensorData.getOrientation() != null && sensorData.getStartOrientation() != null) {
+                float deltaPitch = sensorData.getOrientation()[1] - sensorData.getStartOrientation()[1]; // Y axis
+                float deltaRoll = sensorData.getOrientation()[2] - sensorData.getStartOrientation()[2]; // X axis
 
                 float xSpeed = 2 * deltaRoll * Constants.SCREEN_WIDTH / 1000f;
                 float ySpeed = deltaPitch * Constants.SCREEN_HEIGHT / 1000f;
@@ -114,10 +114,12 @@ public class GameplayScene implements Scene {
             }
 
             player.update(playerPoint);
-            obstacleManager.update();
-            if(obstacleManager.playerCollision(player)) {
+            generator.update();
+            if(generator.playerCollision(player)) {
                 gameOver = true;
                 gameOverTime = System.currentTimeMillis();
+                //playerPoint.x = playerPoint.x-10;
+                //playerPoint.y = playerPoint.y-10;
             }
         }
     }
