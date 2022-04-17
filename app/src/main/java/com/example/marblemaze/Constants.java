@@ -8,6 +8,7 @@ public class Constants {
     public static int SCREEN_HEIGHT;
     public static int BACKGROUND_COLOR = Color.WHITE;
     public static int OBSTACLE_COLOR = Color.BLACK;
+    public static int MARBLE_COLOR = Color.WHITE;
 
     public static Context CURRENT_CONTEXT;
 

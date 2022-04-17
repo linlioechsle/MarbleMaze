@@ -21,14 +21,17 @@ public class GameplayScene implements Scene {
     private long frameTime;
 
     public GameplayScene() {
-        player = new MarblePlayer(new Rect(50, 50, 100, 100), Color.BLUE);
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
-        player.update(playerPoint);
-
-        generator = new MazeGenerator(200, 350, 10, Color.BLACK);
         sensorData = new SensorData();
         sensorData.register();
+        player = new MarblePlayer(new Rect(50, 50, 100, 100));
+        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        player.update(playerPoint);
+        player.update();
+
+        generator = new MazeGenerator(200, 350, 10, Color.BLACK);
         frameTime = System.currentTimeMillis();
+
+
     }
 
     public void reset() {

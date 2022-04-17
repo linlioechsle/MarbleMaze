@@ -7,28 +7,25 @@ import android.graphics.Rect;
 
 public class MarblePlayer implements GameObject {
     private Rect marble;
-    private int color;
 
     public Rect getMarble() {
         return marble;
     }
 
-    public MarblePlayer(Rect marble, int color) {
+    public MarblePlayer(Rect marble) {
         this.marble = marble;
-        this.color = color;
         System.out.println("CREATED NEW PLAYER");
     }
 
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
-        paint.setColor(color);
+        paint.setColor(Constants.MARBLE_COLOR);
         canvas.drawRect(marble, paint);
     }
 
     @Override
     public void update() {
-
     }
 
     public void update(Point point) { // left, top, right, bottom

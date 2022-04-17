@@ -12,10 +12,13 @@ public class SensorData implements SensorEventListener {
     private Sensor accelerometer;
     private Sensor magnetometer;
     private Sensor light;
+    private Sensor temperature;
 
     private float[] accelerometerOutput;
     private float[] magnetometerOutput;
     private float lightOutput;
+    private float temperatureOutput;
+    public int tempColor = Color.MAGENTA;
 
     private float[] orientation = new float[3];
 
@@ -38,6 +41,7 @@ public class SensorData implements SensorEventListener {
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         light = manager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        temperature = manager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
     }
 
@@ -45,6 +49,7 @@ public class SensorData implements SensorEventListener {
         manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
         manager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
         manager.registerListener(this, light, SensorManager.SENSOR_DELAY_GAME);
+        manager.registerListener(this, temperature, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void pause() {
@@ -69,18 +74,32 @@ public class SensorData implements SensorEventListener {
             case Sensor.TYPE_LIGHT:
                 lightOutput = event.values[0];
                 System.out.println("LIGHT LEVEL: " + lightOutput);
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                temperatureOutput = event.values[0]; // room temp in degrees Celsius
             default:
                 return;
 
         }
 
         // changing background color
-        if (lightOutput < 1000) {
+        if (lightOutput < 10) { // dark mode
             Constants.BACKGROUND_COLOR = Color.BLACK;
             Constants.OBSTACLE_COLOR = Color.WHITE;
-        } else {
+        } else { // light mode
             Constants.BACKGROUND_COLOR = Color.WHITE;
             Constants.OBSTACLE_COLOR = Color.BLACK;
+        }
+
+        if (temperatureOutput <= 0) { // very cold, blue marble
+            Constants.MARBLE_COLOR = Color.BLUE;
+        } else if (temperatureOutput > 0 && temperatureOutput <= 7) { // sort of cold, light blue
+            Constants.MARBLE_COLOR = Color.rgb(161, 209, 240);
+        } else if (temperatureOutput >7 && temperatureOutput <= 15 ) { // almost warm, purple
+            Constants.MARBLE_COLOR = Color.rgb(127, 15, 255);
+        } else if (temperatureOutput > 15 && temperatureOutput <= 25 ) { // warm, pink
+            Constants.MARBLE_COLOR = Color.rgb(255, 33, 248);
+        } else { // very warm, red
+            Constants.MARBLE_COLOR = Color.RED;
         }
 
         // getting rotation matrix
