@@ -10,9 +10,6 @@ import java.util.ArrayList;
 public class MazeGenerator {
     // higher index and higher y value means lower on the screen
     private ArrayList<Obstacle> obstacles;
-    private int playerGap;
-    private int obstacleGap;
-    private int obstacleHeight;
     private int color;
     private long startTime;
 
@@ -24,10 +21,7 @@ public class MazeGenerator {
 
 
 
-    public MazeGenerator(int playerGap, int obstacleGap, int obstacleHeight, int color) {
-        this.playerGap = playerGap;
-        this.obstacleGap = obstacleGap;
-        this.obstacleHeight = obstacleHeight;
+    public MazeGenerator(int color) {
         this.color = color;
 
         startTime = System.currentTimeMillis();
@@ -45,24 +39,31 @@ public class MazeGenerator {
         return false;
     }
 
+
     private void populateObstacles() {
-        // currY = -5*Constants.SCREEN_HEIGHT/4;
-
-
         obstacles.add(new Obstacle(280,0, 287, 300));
         obstacles.add(new Obstacle(150, 300, 287, 307));
         obstacles.add(new Obstacle(0, 150, 100, 157));
         obstacles.add(new Obstacle(150, 300, 157, 500));
         obstacles.add(new Obstacle(150, 500, 400, 507));
         obstacles.add(new Obstacle(0, 700, 800,707)); // long horiz
+        obstacles.add(new Obstacle(250, 700, 257, 1000));
+        obstacles.add(new Obstacle(650, 700, 657,950));
         obstacles.add(new Obstacle(800,250,807, 707));
         obstacles.add(new Obstacle(500, 250, 807, 257));
-        //obstacles.add(new Obstacle());
-
-
-    }
-
-    public void generateMaze() {
+        obstacles.add(new Obstacle(Constants.SCREEN_WIDTH-50, 350, Constants.SCREEN_WIDTH-1, 357));
+        obstacles.add(new Obstacle(Constants.SCREEN_WIDTH-100, 800, Constants.SCREEN_WIDTH-1, 807));
+        obstacles.add(new Obstacle(Constants.SCREEN_WIDTH-100, 800, Constants.SCREEN_WIDTH-107, 850));
+        obstacles.add(new Obstacle(400, 1000, 407, 1700)); // long vert
+        obstacles.add(new Obstacle(250, 1700, 407, 1707));
+        obstacles.add(new Obstacle(900, 1800, 907, Constants.SCREEN_HEIGHT-1));
+        obstacles.add(new Obstacle(Constants.SCREEN_WIDTH-250, 1100, Constants.SCREEN_HEIGHT-1, 1107));
+        obstacles.add(new Obstacle(Constants.SCREEN_WIDTH-600, 1400, Constants.SCREEN_HEIGHT-1, 1407));
+        obstacles.add(new Obstacle(300, Constants.SCREEN_HEIGHT-100, 307, Constants.SCREEN_HEIGHT-1));
+        obstacles.add(new Obstacle(100, Constants.SCREEN_HEIGHT-100, 307, Constants.SCREEN_HEIGHT-107));
+        obstacles.add(new Obstacle(100, Constants.SCREEN_HEIGHT-400, 107, Constants.SCREEN_HEIGHT-100));
+        obstacles.add(new Obstacle(150, Constants.SCREEN_HEIGHT-600,250, Constants.SCREEN_HEIGHT-607));
+        obstacles.add(new Obstacle(Constants.SCREEN_WIDTH-300, 1600, Constants.SCREEN_WIDTH-1, 1607));
 
     }
 

@@ -19,8 +19,8 @@ public class StartScreen implements Scene {
         paint.setTextSize(50);
         paint.setColor(Color.MAGENTA);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("Welcome to MarbleMaze!\n", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/8, paint);
-        canvas.drawText("Tap the screen to start playing!", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/4, paint);
+        canvas.drawText("Welcome to MarbleMaze!\n", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/4, paint);
+        canvas.drawText("Tap the screen to start playing!", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2, paint);
     }
 
     @Override

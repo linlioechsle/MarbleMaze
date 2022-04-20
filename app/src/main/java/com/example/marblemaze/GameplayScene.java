@@ -11,33 +11,40 @@ public class GameplayScene implements Scene {
     private MarblePlayer player;
     private Point playerPoint;
     private MazeGenerator generator;
+    private Rect winBox;
 
     private boolean movingPlayer = false;
 
     private boolean gameOver = false;
+    private boolean winner = false;
     private long gameOverTime;
+    private long winTime;
 
     private SensorData sensorData;
     private long frameTime;
+
+    private Rect portal1, portal2;
 
     public GameplayScene() {
         sensorData = new SensorData();
         sensorData.register();
         player = new MarblePlayer(new Rect(50, 50, 100, 100));
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        playerPoint = new Point(50, 50);
         player.update(playerPoint);
         player.update();
 
-        generator = new MazeGenerator(200, 350, 10, Color.BLACK);
+        generator = new MazeGenerator(Color.BLACK);
+        winBox = new Rect(Constants.SCREEN_WIDTH - 90, Constants.SCREEN_HEIGHT - 100, Constants.SCREEN_WIDTH- 40, Constants.SCREEN_HEIGHT- 50);
+        portal1 = new Rect(280, Constants.SCREEN_HEIGHT-650, 350, Constants.SCREEN_HEIGHT-575);
+        portal2 = new Rect(700, 25, 775, 100);
+
         frameTime = System.currentTimeMillis();
-
-
     }
 
     public void reset() {
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        playerPoint = new Point(50, 50);
         player.update(playerPoint);
-        generator = new MazeGenerator(200, 350, 10, Color.BLACK);
+        generator = new MazeGenerator(Color.BLACK);
         movingPlayer = false;
     }
 
@@ -57,6 +64,12 @@ public class GameplayScene implements Scene {
                     gameOver = false;
                     sensorData.newGame();
                 }
+                if(winner && System.currentTimeMillis() - winTime >= 2000) {
+                    reset();
+                    winner = false;
+                    sensorData.newGame();
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(!gameOver && movingPlayer)
@@ -71,16 +84,30 @@ public class GameplayScene implements Scene {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawColor(Constants.BACKGROUND_COLOR);
-
+        Paint paint = new Paint();
         player.draw(canvas);
         generator.draw(canvas);
+        paint.setColor(Color.MAGENTA);
+        canvas.drawRect(winBox, paint);
+
+        paint.setColor(Color.YELLOW);
+        canvas.drawRect(portal1, paint);
+        canvas.drawRect(portal2, paint);
 
         if(gameOver) {
-            Paint paint = new Paint();
-            paint.setTextSize(100);
-            paint.setColor(Color.MAGENTA);
-            paint.setTextAlign(Paint.Align.CENTER);
-            canvas.drawText("GAME OVER!", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2, paint);
+            Paint paint1 = new Paint();
+            paint1.setTextSize(100);
+            paint1.setColor(Color.RED);
+            paint1.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText("GAME OVER!", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2, paint1);
+        }
+
+        if(winner) {
+            Paint paint2 = new Paint();
+            paint2.setTextSize(100);
+            paint2.setColor(Color.GREEN);
+            paint2.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText("WINNER!", Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2, paint2);
         }
     }
 
@@ -123,6 +150,18 @@ public class GameplayScene implements Scene {
                 gameOverTime = System.currentTimeMillis();
                 //playerPoint.x = playerPoint.x-10;
                 //playerPoint.y = playerPoint.y-10;
+            }
+
+            if (Rect.intersects(portal1, player.getMarble()) || Rect.intersects(portal2, player.getMarble())) {
+                playerPoint.x = 50;
+                playerPoint.y = 50;
+            }
+
+            if (Rect.intersects(winBox, player.getMarble())) {
+                winner = true;
+                playerPoint.x = 50;
+                playerPoint.y = 50;
+                winTime = System.currentTimeMillis();
             }
         }
     }
