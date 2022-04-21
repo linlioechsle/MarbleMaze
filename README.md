@@ -19,6 +19,7 @@ temperature of the user’s environment using the device’s ambient temperature
 ## Feature Extraction
 SensorManager.getRotationMatrix
 - update() in GameplayScene: deltaPitch and deltaRoll depend on the change in the user's initial orientation of the phone. This is why it's important that the user has their phone parallel to the floor when they start playing so that the marble will roll accurately.
+- Light Sensor: Had to find a value that would properly capture dark/light rooms. 0 Lumens would be very difficult to achieve for a dark room, but 15 Lumens was found to be sufficient
 
 ## Classification/Regression
 SensorManager.getOrientation
