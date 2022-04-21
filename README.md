@@ -10,11 +10,11 @@ temperature of the user’s environment using the device’s ambient temperature
 # Sensing Pipeline
 ## Sensor Data Extraction
 - Registering sensors using SENSOR_DELAY_GAME (20,000 microsecond delay), which is the recommended rate of getting sensor data for games.
-- 
-
+- Max FPS is 30
 
 ## Preprocessing
-filter
+- An attempt was made to incorporate and high pass filter to remove the influence of the force of gravity on the accelerometer. However, because this is a marble-based game that wants to mimic how a marble would roll in real life, gravity is necessary and the high-pass filter was removed.
+
 
 ## Feature Extraction
 SensorManager.getRotationMatrix
@@ -22,6 +22,6 @@ SensorManager.getRotationMatrix
 
 ## Classification/Regression
 SensorManager.getOrientation
-- Azimuth (-z axis): values[0]
-- Pitch (x axis): values[1]
-- Roll (y axis): values[2]
+- Azimuth (-z axis): values[0] -- Not used for marble movement because it is not necessary. The marble only moves in the x and y axes.
+- Pitch (x axis): values[1] (held portrait: moves left and right)
+- Roll (y axis): values[2] (held portrait: moves forward and backward)
