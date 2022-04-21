@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-public class Obstacle implements GameObject {
+public class MazeWall implements GameObject {
     private Rect rectangle;
     private int color;
 
@@ -22,7 +22,7 @@ public class Obstacle implements GameObject {
 
     }
 
-    public Obstacle(int left, int top, int right, int bottom) {
+    public MazeWall(int left, int top, int right, int bottom) {
         rectangle = new Rect(left, top, right, bottom);
 
     }

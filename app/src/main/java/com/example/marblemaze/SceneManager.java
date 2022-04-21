@@ -14,7 +14,6 @@ public class SceneManager {
         scenes.add(new StartScreen());
         scenes.add(new GameplayScene());
 
-
     }
 
     public void receiveTouch(MotionEvent event) {

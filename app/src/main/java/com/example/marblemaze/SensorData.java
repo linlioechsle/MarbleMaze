@@ -82,7 +82,7 @@ public class SensorData implements SensorEventListener {
         }
 
         // changing background color
-        if (lightOutput < 10) { // dark mode
+        if (lightOutput < 15) { // dark mode
             Constants.BACKGROUND_COLOR = Color.BLACK;
             Constants.OBSTACLE_COLOR = Color.WHITE;
         } else { // light mode
