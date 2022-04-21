@@ -18,7 +18,6 @@ public class SensorData implements SensorEventListener {
     private float[] magnetometerOutput;
     private float lightOutput;
     private float temperatureOutput;
-    public int tempColor = Color.MAGENTA;
 
     private float[] orientation = new float[3];
 
@@ -49,7 +48,7 @@ public class SensorData implements SensorEventListener {
         manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
         manager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
         manager.registerListener(this, light, SensorManager.SENSOR_DELAY_GAME);
-        manager.registerListener(this, temperature, SensorManager.SENSOR_DELAY_GAME);
+        manager.registerListener(this, temperature, SensorManager.SENSOR_DELAY_UI);
     }
 
     public void pause() {
